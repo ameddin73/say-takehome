@@ -12,11 +12,13 @@ import withWidth, {isWidthUp} from '@material-ui/core/withWidth';
 function Subreddit(props) {
     const {posts, width} = props;
 
-    function checkUrl(url) {
+    function isImage(url) {
         return (url.match(/\.(jpeg|jpg|gif|png)$/) != null);
     }
 
     function oneColumn() {
+        // Sets the layout to be one column if there's 1 post or the screen
+        // is smaller than medium
         return posts.length <= 1 || !isWidthUp('md', width);
     }
 
@@ -40,7 +42,8 @@ function Subreddit(props) {
                                   width: 350,
                               }}>
                     <img src={
-                        checkUrl(post.url) ?
+                        // Use post image if exists, otherwise reddit logo
+                        isImage(post.url) ?
                             post.url :
                             "https://www.redditinc.com/assets/images/site/reddit-logo.png"}
                          alt={he.decode(post.title)}
@@ -60,6 +63,7 @@ function Subreddit(props) {
                                     color: "orange",
                                     display: "flex",
                                     alignItems: "center",
+                                    // Probably shoulda pulled the styles out but it's late ¯\_(ツ)_/¯
                                 }}>
                                     <ThumbUpAltIcon fontSize="small"/>&nbsp;
                                     {post.upvotes.toLocaleString()} </span>
@@ -70,7 +74,7 @@ function Subreddit(props) {
                                 <IconButton
                                     alt="View on Reddit"
                                     onClick={() =>
-                                        window.open("https://reddit.com" + post.redditUrl)}>
+                                        window.open(post.redditUrl)}>
                                     <MoreHorizIcon fontSize="large" style={{color: "white"}}/>
                                 </IconButton>
                             </Tooltip>

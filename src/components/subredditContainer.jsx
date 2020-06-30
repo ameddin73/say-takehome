@@ -37,7 +37,7 @@ function SubredditContainer() {
             posts[data.subreddit].push({
                 title: data.title,
                 url: data.url,
-                redditUrl: data.permalink,
+                redditUrl: "https://reddit.com" + data.permalink,
                 time: time,
                 upvotes: data.ups,
                 thumbnail: data.thumbnail,
@@ -46,15 +46,17 @@ function SubredditContainer() {
         return posts;
     }
 
-    function handleChange(e) {
+    function selectSubreddit(e) {
         setSelectedSub(e.target.value);
     }
 
-    function refresh() {
+    function refreshPosts() {
+        // Update var to invoke useEffect (value doesn't matter)
         setCallRefresh(!callRefresh);
     }
 
     const subredditList = () => (
+        // Sort keys alphabetically and return as list of option components
         Object.keys(posts).sort((a, b) => (
             a.toLowerCase().localeCompare(b.toLowerCase())
         )).map((subreddit) => {
@@ -101,7 +103,7 @@ function SubredditContainer() {
                     <InputLabel>Subreddit</InputLabel>
                     <Select
                         native
-                        onChange={handleChange}
+                        onChange={selectSubreddit}
                         label="Subreddit"
                     >
                         <option key="None" value=""></option>
@@ -110,7 +112,7 @@ function SubredditContainer() {
                 </FormControl>
                 <IconButton
                     alt="Refresh"
-                    onClick={refresh}>
+                    onClick={refreshPosts}>
                     <RefreshIcon fontSize="large"/>
                 </IconButton>
             </Grid>
