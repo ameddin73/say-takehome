@@ -8,9 +8,35 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
 import Tooltip from "@material-ui/core/Tooltip";
 import withWidth, {isWidthUp} from '@material-ui/core/withWidth';
+import {withStyles} from "@material-ui/styles";
+import {compose} from "recompose";
+
+const styles = {
+    tile: {
+        height: 350,
+        width: 350,
+    },
+    subtitle: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+    },
+    upvotes: {
+        fontWeight: "bold",
+        color: "orange",
+        display: "flex",
+        alignItems: "center",
+    },
+    image: {
+        objectFit: "contains",
+    },
+    moreIcon: {
+        color: "white",
+    },
+}
 
 function Subreddit(props) {
-    const {posts, width} = props;
+    const {posts, width, classes} = props;
 
     function isImage(url) {
         return (url.match(/\.(jpeg|jpg|gif|png)$/) != null);
@@ -20,6 +46,10 @@ function Subreddit(props) {
         // Sets the layout to be one column if there's 1 post or the screen
         // is smaller than medium
         return posts.length <= 1 || !isWidthUp('md', width);
+    }
+
+    function sortByUpvotes(a, b) {
+        return a.upvotes > b.upvotes ? -1 : a.upvotes < b.upvotes ? 1 : 0;
     }
 
     return (
@@ -32,39 +62,22 @@ function Subreddit(props) {
                 {width: 375} :
                 {width: 750}
             }>
-            {posts.sort((a, b) => {
-                return a.upvotes > b.upvotes ? -1 : a.upvotes < b.upvotes ? 1 : 0;
-            }).map((post) => (
+            {posts.sort(sortByUpvotes).map((post) => (
                 <GridListTile key={post.title}
                               cols={1}
-                              styles={{
-                                  height: 350,
-                                  width: 350,
-                              }}>
+                              className={classes.tile}>
                     <img src={
                         // Use post image if exists, otherwise reddit logo
                         isImage(post.url) ?
                             post.url :
-                            "https://www.redditinc.com/assets/images/site/reddit-logo.png"}
+                            "logo512.png"}
                          alt={he.decode(post.title)}
-                         style={{
-                             objectFit: "contains",
-                         }}/>
+                         className={classes.image}/>
                     <GridListTileBar
                         title={he.decode(post.title)}
                         subtitle={
-                            <div style={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                            }}>
-                                <span style={{
-                                    fontWeight: "bold",
-                                    color: "orange",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    // Probably shoulda pulled the styles out but it's late ¯\_(ツ)_/¯
-                                }}>
+                            <div className={classes.subtitle}>
+                                <span className={classes.upvotes}>
                                     <ThumbUpAltIcon fontSize="small"/>&nbsp;
                                     {post.upvotes.toLocaleString()} </span>
                                 <span> {post.time.toLocaleDateString()}</span>
@@ -73,9 +86,8 @@ function Subreddit(props) {
                             <Tooltip title="View on Reddit">
                                 <IconButton
                                     alt="View on Reddit"
-                                    onClick={() =>
-                                        window.open(post.redditUrl)}>
-                                    <MoreHorizIcon fontSize="large" style={{color: "white"}}/>
+                                    onClick={() => window.open(post.redditUrl)}>
+                                    <MoreHorizIcon fontSize="large" className={classes.moreIcon}/>
                                 </IconButton>
                             </Tooltip>
                         }/>
@@ -85,4 +97,4 @@ function Subreddit(props) {
     )
 }
 
-export default withWidth()(Subreddit);
+export default compose(withWidth(), withStyles(styles))(Subreddit);

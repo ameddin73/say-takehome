@@ -3,8 +3,20 @@ import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import SubredditContainer from "./components/subredditContainer";
+import {withStyles} from "@material-ui/styles";
 
-function App() {
+const styles = {
+    logo: {
+        width: "40px",
+        height: "40px",
+        marginRight: "0px",
+        marginLeft: "auto",
+        cursor: "pointer",
+    },
+}
+
+function App(props) {
+    const {classes} = props;
 
     function onClick() {
         window.open('https://www.reddit.com/');
@@ -20,13 +32,7 @@ function App() {
                     <img src="logo172.png"
                          alt="reddit.com"
                          onClick={onClick}
-                         style={{
-                             width: "40px",
-                             height: "40px",
-                             marginRight: "0px",
-                             marginLeft: "auto",
-                             cursor: "pointer",
-                         }}/>
+                         className={classes.logo}/>
                 </Toolbar>
             </AppBar>
             <SubredditContainer/>
@@ -34,4 +40,4 @@ function App() {
     );
 }
 
-export default App;
+export default withStyles(styles)(App);

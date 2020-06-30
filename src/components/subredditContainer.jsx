@@ -8,8 +8,27 @@ import Subreddit from "./subreddit";
 import moment from "moment";
 import IconButton from "@material-ui/core/IconButton";
 import RefreshIcon from "@material-ui/icons/Refresh";
+import {withStyles} from "@material-ui/styles";
 
-function SubredditContainer() {
+const styles = {
+    loading: {
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+    },
+    grid: {
+        marginTop: 75,
+        marginBottom: 60,
+    },
+    form: {
+        display: "flex",
+        width: "auto",
+        transform: "translate(-25%)"
+    },
+}
+
+function SubredditContainer(props) {
+    const {classes} = props;
     const [posts, setPosts] = useState({});
     const [selectedSub, setSelectedSub] = useState();
     const [callRefresh, setCallRefresh] = useState(false);
@@ -75,11 +94,7 @@ function SubredditContainer() {
     if (!posts || Object.keys(posts).length === 0) {
         return (
             <div>
-                <CircularProgress style={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                }}/>
+                <CircularProgress className={classes.loading}/>
             </div>
         )
     }
@@ -90,16 +105,9 @@ function SubredditContainer() {
                   direction="row"
                   alignItems="flex-start"
                   justify="center"
-                  style={{
-                      marginTop: 75,
-                      marginBottom: 60,
-                  }}>
+                  className={classes.grid}>
                 <FormControl variant="outlined"
-                             style={{
-                                 display: "flex",
-                                 width: "auto",
-                                 transform: "translate(-25%)"
-                             }}>
+                             className={classes.form}>
                     <InputLabel>Subreddit</InputLabel>
                     <Select
                         native
@@ -123,4 +131,4 @@ function SubredditContainer() {
     )
 }
 
-export default SubredditContainer;
+export default withStyles(styles)(SubredditContainer);
